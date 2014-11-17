@@ -1,0 +1,31 @@
+# Ignores for OBOMA
+bin/
+classes/
+deploy/
+dist/
+lib/
+log/
+reports/
+test/
+tmp/
+
+
+build-local.properties
+*.orig
+
+# Default Java ignores
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignores for OS X
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Ignores for Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
