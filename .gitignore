@@ -1,18 +1,3 @@
-# Ignores for OBOMA
-bin/
-classes/
-deploy/
-dist/
-lib/
-log/
-reports/
-test/
-tmp/
-
-
-build-local.properties
-*.orig
-
 # Default Java ignores
 *.class
 *.jar
@@ -29,3 +14,18 @@ build-local.properties
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Ignores for OBOMA
+bin/
+classes/
+deploy/
+dist/
+log/
+reports/
+test/
+tmp/
+!lib/*.jar
+
+
+build-local.properties
+*.orig
