@@ -11,8 +11,8 @@ public class SIRFunction implements ITransformationFunction{
 
     }
 
-    private void calculateSIR(){
-
+    private void calculateSIR(double pSusceptible, double pInfected, double pRecovered){
+        //See mainForEuler class from ECN1
     }
 
 }

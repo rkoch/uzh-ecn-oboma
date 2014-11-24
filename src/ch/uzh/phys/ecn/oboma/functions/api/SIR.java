@@ -3,6 +3,7 @@ package ch.uzh.phys.ecn.oboma.functions.api;
 
 public class SIR implements IDGL {
 
+    // Change Infectionrates from DiseasConstants
     public static final double INFECTION_RATE = 0.00218d;
     public static final double RECOVERY_RATE = 0.5;
     private double[] dy = new double[3];
