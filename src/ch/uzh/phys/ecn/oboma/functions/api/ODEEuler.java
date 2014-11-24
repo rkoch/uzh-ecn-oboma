@@ -1,7 +1,9 @@
+package ch.uzh.phys.ecn.oboma.functions.api;
+
 
 public class ODEEuler {
 
-    double[] step(double[] yn, double tn, double dt, DGL func){
+    double[] step(double[] yn, double tn, double dt, IDGL func){
         double[] yn1 = new double[yn.length];
         double[] dy = func.dydt(yn, tn);
 

@@ -1,3 +1,5 @@
+package ch.uzh.phys.ecn.oboma.functions.api;
+
 
 public class RK2 {
 
@@ -8,7 +10,7 @@ public class RK2 {
     double[] temp2;
     double[] stepn1 = new double[3];
 
-    public double[] step(double[] yn, double tn, double dt, DGL func){
+    public double[] step(double[] yn, double tn, double dt, IDGL func){
         yn1 = euler.step(yn, tn, dt, func);
 
         temp1 = func.dydt(yn, dt);

@@ -1,5 +1,7 @@
+package ch.uzh.phys.ecn.oboma.functions.api;
 
-public class SIR implements DGL {
+
+public class SIR implements IDGL {
 
     public static final double INFECTION_RATE = 0.00218d;
     public static final double RECOVERY_RATE = 0.5;
