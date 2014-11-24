@@ -1,7 +1,7 @@
 package ch.uzh.phys.ecn.oboma.functions.api;
 
 
-public class RK2 {
+public class ODERK2 {
 
     ODEEuler euler = new ODEEuler();
 
