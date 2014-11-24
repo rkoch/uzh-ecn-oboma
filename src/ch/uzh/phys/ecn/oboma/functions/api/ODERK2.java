@@ -10,7 +10,7 @@ public class ODERK2 {
     double[] temp2;
     double[] stepn1 = new double[3];
 
-    public double[] step(double[] yn, double tn, double dt, IDGL func){
+    public double[] step(double[] yn, double tn, double dt, IODE func){
         yn1 = euler.step(yn, tn, dt, func);
 
         temp1 = func.dydt(yn, dt);

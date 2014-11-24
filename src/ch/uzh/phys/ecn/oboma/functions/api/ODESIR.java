@@ -1,7 +1,7 @@
 package ch.uzh.phys.ecn.oboma.functions.api;
 
 
-public class SIR implements IDGL {
+public class ODESIR implements IODE {
 
     // Change Infectionrates from DiseasConstants
     public static final double INFECTION_RATE = 0.00218d;
