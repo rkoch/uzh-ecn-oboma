@@ -11,9 +11,9 @@ public class SIRFunction implements ITransformationFunction{
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
 
-        double[] sirInNode = getSIRInNode(pNode);
-        double[] newDiseaseDistributionInNode = calculateSIR(sirInNode[0], sirInNode[1], sirInNode[2]);
-        InfectionState newAgentInfectionState = getNewInfectionState(newDiseaseDistributionInNode);
+        double[] diseaseDistributionInNode = getSIRInNode(pNode);
+        double[] newDiseaseDistributionInNode = calculateSIR(diseaseDistributionInNode[0], diseaseDistributionInNode[1], diseaseDistributionInNode[2]);
+        InfectionState newAgentInfectionState = getNewInfectionState(diseaseDistributionInNode, newDiseaseDistributionInNode);
 
         return newAgentInfectionState;
     }
@@ -38,7 +38,7 @@ public class SIRFunction implements ITransformationFunction{
         return yn1;
     }
 
-    private InfectionState getNewInfectionState(double[] pInfectionDistribution){
+    private InfectionState getNewInfectionState(double[] pOldInfectionDistribution, double[] pNewInfectionDistribution){
         //TODO calculate new InfectionState of agent
 
         return null;
