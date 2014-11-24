@@ -1,14 +1,17 @@
-package ch.uzh.phys.ecn.oboma.functions.api;
+package ch.uzh.phys.ecn.oboma.functions.sirfunction;
 
 import ch.uzh.phys.ecn.oboma.agents.api.Agent;
+import ch.uzh.phys.ecn.oboma.common.InfectionState;
+import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
 public class SIRFunction implements ITransformationFunction{
 
     @Override
-    public void apply(Agent pAgent, INode pNode) {
+    public InfectionState apply(Agent pAgent, INode pNode) {
 
+        return null;
     }
 
     private void calculateSIR(double pSusceptible, double pInfected, double pRecovered){

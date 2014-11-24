@@ -1,4 +1,6 @@
-package ch.uzh.phys.ecn.oboma.functions.api;
+package ch.uzh.phys.ecn.oboma.functions.sirfunction;
+
+import ch.uzh.phys.ecn.oboma.functions.api.IODE;
 
 
 public class ODERK2 {
