@@ -6,3 +6,9 @@ SIS MODEL
   automatically IMMUNE.
 
 **************************************************
+OTHER POSSIBLE MODELS
+  SEIS
+  SEIR
+  MSIR
+  MSEIR
+  MSEIRS
