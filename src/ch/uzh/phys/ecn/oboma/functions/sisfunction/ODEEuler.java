@@ -1,4 +1,4 @@
-package ch.uzh.phys.ecn.oboma.functions.sirfunction;
+package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
 import ch.uzh.phys.ecn.oboma.functions.api.IODE;
 

@@ -1,4 +1,4 @@
-package ch.uzh.phys.ecn.oboma.functions.sirfunction;
+package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
 import ch.uzh.phys.ecn.oboma.agents.api.Agent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
@@ -6,14 +6,22 @@ import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
-public class SIRFunction implements ITransformationFunction{
+public class SISFunction implements ITransformationFunction{
 
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
 
+        if(pAgent.getmInfectionState() == InfectionState.IMMUNE){
+            return InfectionState.IMMUNE;
+        }
+
         double[] diseaseDistributionInNode = getSIRInNode(pNode);
         double[] newDiseaseDistributionInNode = calculateSIR(diseaseDistributionInNode[0], diseaseDistributionInNode[1], diseaseDistributionInNode[2]);
         InfectionState newAgentInfectionState = getNewInfectionState(diseaseDistributionInNode, newDiseaseDistributionInNode);
+
+        if(newAgentInfectionState == InfectionState.RECOVERED){
+            return InfectionState.SUSCEPTIBLE;
+        }
 
         return newAgentInfectionState;
     }
