@@ -19,13 +19,59 @@
  */
 package ch.uzh.phys.ecn.oboma.map.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.EqualsAndHashCode;
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 
 
-public interface INode {
+@EqualsAndHashCode
+class AgentPlacement
+        implements ITimeDependant {
 
-    boolean place(Agent pAgent);
+    private final Agent mAgent;
+    private int         mRemainingTime;
 
-    int countFreeSeats();
+
+    public AgentPlacement(Agent pAgent, int pTimeToSpend) {
+        checkNotNull(pAgent);
+        checkArgument(pTimeToSpend > 0);
+        mAgent = pAgent;
+        mRemainingTime = pTimeToSpend;
+    }
+
+
+    public Agent getAgent() {
+        return mAgent;
+    }
+
+    public int getRemainingTime() {
+        return mRemainingTime;
+    }
+
+    public boolean isStaying() {
+        return mRemainingTime > 0;
+    }
+
+    public boolean decrease() {
+        return --mRemainingTime > 0;
+    }
+
+
+    @Override
+    public String toString() {
+        return "AgentPlacement [agent=" + mAgent.getId() + ", remainingTime=" + mRemainingTime + "]";
+    }
+
+
+    @Override
+    public void preelapse() {
+        decrease();
+    }
+
+    @Override
+    public void postelapse() {
+        // Nothing to do
+    }
 
 }

@@ -19,13 +19,21 @@
  */
 package ch.uzh.phys.ecn.oboma.map.api;
 
-import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 
+public interface ITimeDependant {
 
-public interface INode {
+    /**
+     * Pre-elapse:
+     * 1. Each dependant elapses on his own
+     * 2. Agents will be sent to outgoing queues to free up space for inbound Agents
+     * 3. Free seat count will be updated
+     */
+    void preelapse();
 
-    boolean place(Agent pAgent);
-
-    int countFreeSeats();
+    /**
+     * Post-elapse:
+     * 1. Each outgoing agent will move to his destination if there is a seat available
+     */
+    void postelapse();
 
 }
