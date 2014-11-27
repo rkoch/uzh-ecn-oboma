@@ -20,6 +20,7 @@
 package ch.uzh.phys.ecn.oboma.map.api;
 
 
+
 public interface IDiseaseTransmittor
         extends ITimeDependant {
 

@@ -22,7 +22,8 @@ package ch.uzh.phys.ecn.oboma.map.api;
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 
 
-public interface INode {
+public interface INode
+        extends IDiseaseTransmittor {
 
     boolean place(Agent pAgent);
 

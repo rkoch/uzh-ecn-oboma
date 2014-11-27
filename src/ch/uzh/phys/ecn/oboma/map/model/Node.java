@@ -17,7 +17,7 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.map.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -33,11 +33,12 @@ import lombok.EqualsAndHashCode;
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
+import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
 @EqualsAndHashCode
-class Node
-        implements INode, IDiseaseTransmittor {
+public class Node
+        implements INode {
 
     private final String                  mId;
     private double                        mLatitude;
