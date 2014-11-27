@@ -19,7 +19,6 @@
  */
 package ch.uzh.phys.ecn.oboma.map.api;
 
-
 public interface ITimeDependant {
 
     /**
