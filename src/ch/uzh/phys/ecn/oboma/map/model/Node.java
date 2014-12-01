@@ -132,4 +132,8 @@ public class Node
         agentMods.forEach((a, i) -> a.setState(i));
     }
 
+    public Map<String, Node> getDestinationNodes() {
+    	return mDestinationNodes;
+    }
+
 }

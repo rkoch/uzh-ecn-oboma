@@ -19,7 +19,10 @@
  */
 package ch.uzh.phys.ecn.oboma.map.api;
 
+import java.util.Map;
+
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
+import ch.uzh.phys.ecn.oboma.map.model.Node;
 
 
 public interface INode
@@ -28,5 +31,7 @@ public interface INode
     boolean place(Agent pAgent);
 
     int countFreeSeats();
+
+    public Map<String, Node> getDestinationNodes();
 
 }
