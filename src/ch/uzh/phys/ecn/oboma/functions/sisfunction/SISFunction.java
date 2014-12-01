@@ -1,6 +1,6 @@
 package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
-import ch.uzh.phys.ecn.oboma.agents.api.Agent;
+import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.common.AgentUtils;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
@@ -15,6 +15,7 @@ public class SISFunction implements ITransformationFunction{
    private double mInfectionPercentage;
    private double mRecoveryPercentage;
 
+    @Override
     public void onBeforeTimestep(INode pNode){
         mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2]);
@@ -26,7 +27,7 @@ public class SISFunction implements ITransformationFunction{
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
 
-        if(pAgent.getmInfectionState() == InfectionState.IMMUNE){
+        if(pAgent.getState() == InfectionState.IMMUNE){
             return InfectionState.IMMUNE;
         }
 

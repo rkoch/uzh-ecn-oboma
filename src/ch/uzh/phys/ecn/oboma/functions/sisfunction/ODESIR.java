@@ -8,10 +8,10 @@ public class ODESIR implements IODE {
 
     // Change Infectionrates from DiseasConstants
     public static final double INFECTION_RATE = 0.00218d;
-d;
- public static final double RECOVERY_RATE = DiseaseConstants.RECOVERY_RATE;
+    public static final double RECOVERY_RATE = DiseaseConstants.RECOVERY_RATE;
     private double[] dy = new double[3];
 
+    @Override
     public double[] dydt(double[] y, double t){
         dy[0] = -INFECTION_RATE * y[1]*y[0]; //S
         dy[2] = RECOVERY_RATE * y[1]; //R
