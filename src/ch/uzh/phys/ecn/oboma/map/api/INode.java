@@ -19,6 +19,8 @@
  */
 package ch.uzh.phys.ecn.oboma.map.api;
 
+import java.util.List;
+
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 
 
@@ -28,5 +30,9 @@ public interface INode
     boolean place(Agent pAgent);
 
     int countFreeSeats();
+
+    List<Agent> getAllAgents();
+
+    List<Agent> getLeavingAgents();
 
 }

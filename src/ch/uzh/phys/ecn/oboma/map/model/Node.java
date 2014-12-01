@@ -88,6 +88,22 @@ public class Node
 
 
     @Override
+    public List<Agent> getAllAgents() {
+        List<Agent> ret = new ArrayList<>(mAgents.size() + mLeavingAgents.size());
+        for (AgentPlacement ap : mAgents) {
+            ret.add(ap.getAgent());
+        }
+        ret.addAll(mLeavingAgents);
+        return ret;
+    }
+
+    @Override
+    public List<Agent> getLeavingAgents() {
+        return new ArrayList<Agent>(mLeavingAgents);
+    }
+
+
+    @Override
     public void preelapse() {
         Iterator<AgentPlacement> itr = mAgents.iterator();
         while (itr.hasNext()) {
