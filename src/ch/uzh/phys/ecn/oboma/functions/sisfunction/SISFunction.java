@@ -8,6 +8,21 @@ import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 public class SISFunction implements ITransformationFunction{
 
+   private double[] mDiseaseDistributionInNode = new double[3];
+   private double[] mNewDiseaseDistributionInNode = new double[3];
+
+   private double mInfectionPercentage;
+   private double mRecoveryPercentage;
+
+    public SISFunction(INode pNode){
+        // TODO: get S I R IM from pNode into mDiseaseDistibutionInNode
+
+        mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2]);
+
+        mInfectionPercentage = getInfectionPercentage(mDiseaseDistributionInNode[1], mNewDiseaseDistributionInNode[1]);
+        mRecoveryPercentage = getRecoveryPercentage(mDiseaseDistributionInNode[2], mNewDiseaseDistributionInNode[2]);
+    }
+
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
 
@@ -15,21 +30,13 @@ public class SISFunction implements ITransformationFunction{
             return InfectionState.IMMUNE;
         }
 
-        double[] diseaseDistributionInNode = getSIRInNode(pNode);
-        double[] newDiseaseDistributionInNode = calculateSIR(diseaseDistributionInNode[0], diseaseDistributionInNode[1], diseaseDistributionInNode[2]);
-        InfectionState newAgentInfectionState = getNewInfectionState(diseaseDistributionInNode, newDiseaseDistributionInNode);
+        InfectionState newAgentInfectionState = getNewInfectionState(pAgent);
 
         if(newAgentInfectionState == InfectionState.RECOVERED){
             return InfectionState.SUSCEPTIBLE;
         }
 
         return newAgentInfectionState;
-    }
-
-    private double[] getSIRInNode(INode pNode){
-        //TODO: extract S, I and R from pNode
-
-        return null;
     }
 
     private double[] calculateSIR(double pSusceptible, double pInfected, double pRecovered){
@@ -46,7 +53,19 @@ public class SISFunction implements ITransformationFunction{
         return yn1;
     }
 
-    private InfectionState getNewInfectionState(double[] pOldInfectionDistribution, double[] pNewInfectionDistribution){
+    private double getInfectionPercentage(double pOldInfected, double pNewInfected){
+        // TODO: Calculate infectionPercentage
+
+        return 0.0d;
+    }
+
+ private double getRecoveryPercentage(double pOldRecovered, double pNewRecovered){
+        // TODO: calculate recoveryPercentage
+
+        return 0.0d;
+    }
+
+    private InfectionState getNewInfectionState(Agent pAgent){
         //TODO calculate new InfectionState of agent
 
         return null;
