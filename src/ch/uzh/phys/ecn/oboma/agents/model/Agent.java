@@ -28,16 +28,17 @@ import lombok.EqualsAndHashCode;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import ch.uzh.phys.ecn.oboma.agents.api.IAgent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 
 
 @EqualsAndHashCode
-public class Agent {
+public class Agent implements IAgent {
 
     private final String                      mId;
     private InfectionState                    mState;
     // The list is sorted and contains all waypoints AND preferred time of staying there
-    private final List<Pair<String, Integer>> mRoute;
+    private final List<Pair<String, Integer>> mRoute; // NodeId, # Timesteps on the node
 
     public Agent(String pId) {
         checkArgument(pId != null);
