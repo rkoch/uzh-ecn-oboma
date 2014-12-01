@@ -1,6 +1,7 @@
 package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
 import ch.uzh.phys.ecn.oboma.agents.api.Agent;
+import ch.uzh.phys.ecn.oboma.common.AgentUtils;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
@@ -15,8 +16,7 @@ public class SISFunction implements ITransformationFunction{
    private double mRecoveryPercentage;
 
     public SISFunction(INode pNode){
-        // TODO: get S I R IM from pNode into mDiseaseDistibutionInNode
-
+        mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2]);
 
         mInfectionPercentage = getInfectionPercentage(mDiseaseDistributionInNode[1], mNewDiseaseDistributionInNode[1]);
@@ -54,15 +54,11 @@ public class SISFunction implements ITransformationFunction{
     }
 
     private double getInfectionPercentage(double pOldInfected, double pNewInfected){
-        // TODO: Calculate infectionPercentage
-
-        return 0.0d;
+        return 1 - (pOldInfected/pNewInfected);
     }
 
  private double getRecoveryPercentage(double pOldRecovered, double pNewRecovered){
-        // TODO: calculate recoveryPercentage
-
-        return 0.0d;
+        return 1 - (pOldRecovered/pNewRecovered);
     }
 
     private InfectionState getNewInfectionState(Agent pAgent){
