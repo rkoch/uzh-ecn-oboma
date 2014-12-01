@@ -15,7 +15,7 @@ public class SISFunction implements ITransformationFunction{
    private double mInfectionPercentage;
    private double mRecoveryPercentage;
 
-    public SISFunction(INode pNode){
+    public void onBeforeTimestep(INode pNode){
         mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2]);
 

@@ -1,5 +1,6 @@
 package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
+import ch.uzh.phys.ecn.oboma.common.DiseaseConstants;
 import ch.uzh.phys.ecn.oboma.functions.api.IODE;
 
 
@@ -7,7 +8,8 @@ public class ODESIR implements IODE {
 
     // Change Infectionrates from DiseasConstants
     public static final double INFECTION_RATE = 0.00218d;
-    public static final double RECOVERY_RATE = 0.5;
+d;
+ public static final double RECOVERY_RATE = DiseaseConstants.RECOVERY_RATE;
     private double[] dy = new double[3];
 
     public double[] dydt(double[] y, double t){
