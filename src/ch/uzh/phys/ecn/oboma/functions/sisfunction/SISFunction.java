@@ -1,7 +1,10 @@
 package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
+import java.util.Random;
+
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.common.AgentUtils;
+import ch.uzh.phys.ecn.oboma.common.DiseaseConstants;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
@@ -9,7 +12,7 @@ import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 public class SISFunction implements ITransformationFunction{
 
-   private double[] mDiseaseDistributionInNode = new double[3];
+   private double[] mDiseaseDistributionInNode = new double[4];
    private double[] mNewDiseaseDistributionInNode = new double[3];
 
    private double mInfectionPercentage;
@@ -18,10 +21,15 @@ public class SISFunction implements ITransformationFunction{
     @Override
     public void onBeforeTimestep(INode pNode){
         mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
-        mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2]);
+        mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2] + mDiseaseDistributionInNode[3]);
 
-        mInfectionPercentage = getInfectionPercentage(mDiseaseDistributionInNode[1], mNewDiseaseDistributionInNode[1]);
-        mRecoveryPercentage = getRecoveryPercentage(mDiseaseDistributionInNode[2], mNewDiseaseDistributionInNode[2]);
+        mInfectionPercentage = getPercentage(pNode.getAllAgents().size(), (mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
+        mRecoveryPercentage = getPercentage(pNode.getAllAgents().size(), mDiseaseDistributionInNode[2] + mNewDiseaseDistributionInNode[2]);
+    }
+    
+    @Override
+    public void onAfterTimestep(INode pNode){
+        
     }
 
     @Override
@@ -33,15 +41,15 @@ public class SISFunction implements ITransformationFunction{
 
         InfectionState newAgentInfectionState = getNewInfectionState(pAgent);
 
-        if(newAgentInfectionState == InfectionState.RECOVERED){
-            return InfectionState.SUSCEPTIBLE;
+        if(newAgentInfectionState == InfectionState.RECOVERED || newAgentInfectionState == null){
+            newAgentInfectionState = InfectionState.SUSCEPTIBLE;
         }
 
         return newAgentInfectionState;
     }
 
     private double[] calculateSIR(double pSusceptible, double pInfected, double pRecovered){
-        ODESIR sir = new ODESIR();
+        ODESIR sir = new ODESIR(DiseaseConstants.TRAIN_INFECTION_RATE);
         ODERK2 rk2 = new ODERK2();
 
         double dt = 1;
@@ -54,18 +62,33 @@ public class SISFunction implements ITransformationFunction{
         return yn1;
     }
 
-    private double getInfectionPercentage(double pOldInfected, double pNewInfected){
-        return 1 - (pOldInfected/pNewInfected);
-    }
-
- private double getRecoveryPercentage(double pOldRecovered, double pNewRecovered){
-        return 1 - (pOldRecovered/pNewRecovered);
+    private double getPercentage(double pNumberOfAgents, double pNew){
+        return pNew/pNumberOfAgents;
     }
 
     private InfectionState getNewInfectionState(Agent pAgent){
-        //TODO calculate new InfectionState of agent
+        InfectionState infectionState = pAgent.getState();
+        InfectionState newInfectionState;
+        Random r = new Random();
+        double compare = r.nextDouble();
+        
+        if(infectionState == InfectionState.SUSCEPTIBLE){
+            if(compare < mInfectionPercentage){
+                newInfectionState = InfectionState.INFECTED;
+            } else {
+                newInfectionState = InfectionState.SUSCEPTIBLE;
+            }   
+        } else if (infectionState == InfectionState.INFECTED){
+            if(compare < mRecoveryPercentage){
+                newInfectionState = InfectionState.RECOVERED;
+            } else {
+                newInfectionState = InfectionState.INFECTED;
+            }   
+        } else {
+            newInfectionState = null;
+        }
 
-        return null;
+        return newInfectionState;
     }
 
 }
