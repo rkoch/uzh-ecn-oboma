@@ -26,9 +26,11 @@ import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 public interface ITransformationFunction {
 
-    default void onBeforeTimestep(INode pNode) {}
+    default void onBeforeTimestep(INode pNode) {
+    }
 
-    default void onAfterTimestep(INode pNode) {}
+    default void onAfterTimestep(INode pNode) {
+    }
 
     /**
      * **IMPORTANT**

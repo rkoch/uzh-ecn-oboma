@@ -6,7 +6,8 @@ import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
-public class InfectionFunction implements ITransformationFunction{
+public class InfectionFunction
+        implements ITransformationFunction {
 
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
