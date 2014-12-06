@@ -105,6 +105,9 @@ public class Node
 
     @Override
     public void preelapse() {
+        // timestep on this node starts
+        mInfectionFunction.onBeforeTimestep(this);
+
         Iterator<AgentPlacement> itr = mAgents.iterator();
         while (itr.hasNext()) {
             AgentPlacement ap = itr.next();
@@ -131,6 +134,9 @@ public class Node
                 itr.remove();
             }
         }
+
+        // timestep on this node is done
+        mInfectionFunction.onAfterTimestep(this);
     }
 
 
