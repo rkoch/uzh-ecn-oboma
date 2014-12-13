@@ -23,28 +23,35 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import lombok.EqualsAndHashCode;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import ch.uzh.phys.ecn.oboma.agents.api.IAgent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 
 
 @EqualsAndHashCode
-public class Agent {
+public class Agent
+        implements IAgent {
 
     private final String                      mId;
     private InfectionState                    mState;
     // The list is sorted and contains all waypoints AND preferred time of staying there
-    private final List<Pair<String, Integer>> mRoute;
+    private final List<Pair<String, Integer>> mRoute;         // NodeId, # Timesteps on the node
 
-    public Agent(String pId) {
+    private RouteDirection                    mRouteDirection;
+
+    public Agent(String pId, List<Pair<String, Integer>> pRoute) {
         checkArgument(pId != null);
 
         mId = pId;
         mState = InfectionState.SUSCEPTIBLE;
-        mRoute = new ArrayList<>();
+
+        mRoute = pRoute;
+        mRouteDirection = RouteDirection.FORWARD;
     }
 
 
@@ -53,13 +60,51 @@ public class Agent {
     }
 
     public int getPreferredTimeOfStay(String pNodeId) {
-        // TODO: find pref time of stay of this current waypoint
+        for (Pair<String, Integer> item : this.mRoute) {
+            if (item.getKey().equals(pNodeId)) {
+                return item.getValue();
+            }
+        }
+
         return 0;
     }
 
     public String getNextWaypoint(String pCurrentNodeId) {
-        // TODO: find current waypoint and return next
-        return "";
+        // get position of pCurrentNode
+        int currentNodePosition = 0;
+        for (; currentNodePosition < mRoute.size(); currentNodePosition++) {
+            if (mRoute.get(currentNodePosition).getKey().equals(pCurrentNodeId)) {
+                break;
+            }
+        }
+
+        // get position after currentNodePosition
+        ListIterator<Pair<String, Integer>> routeIterator = mRoute.listIterator(currentNodePosition);
+
+
+        if (mRouteDirection.equals(RouteDirection.FORWARD)) {
+            if (routeIterator.hasNext()) {
+                // agent can still go forward
+                return routeIterator.next().getKey();
+            } else if (routeIterator.hasPrevious()) {
+                // we reached the end of the list
+                // -> agent must going backwards
+                mRouteDirection = RouteDirection.BACKWARDS;
+                return routeIterator.previous().getKey();
+            }
+        } else {
+            if (routeIterator.hasPrevious()) {
+                // agent can still go backwards
+                return routeIterator.previous().getKey();
+            } else if (routeIterator.hasNext()) {
+                // agent reached start node
+                // -> must going forwards
+                mRouteDirection = RouteDirection.FORWARD;
+                return routeIterator.next().getKey();
+            }
+        }
+
+        throw new IllegalStateException("Given Node does not exist");
     }
 
     public InfectionState getState() {
