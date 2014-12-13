@@ -19,6 +19,7 @@
  */
 package ch.uzh.phys.ecn.oboma.control;
 
+import ch.uzh.phys.ecn.oboma.agents.api.AgentFactory;
 import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 import ch.uzh.phys.ecn.oboma.map.api.MapFactory;
 import ch.uzh.phys.ecn.oboma.map.view.MapWindow;
@@ -30,7 +31,9 @@ public class ObomaApp {
         try {
             INodeMap map = MapFactory.buildDefaultSBBMap();
 
-            // TODO rma: Add agents to map
+            // Add agents to map
+            AgentFactory.placeAgents(map);
+
             // TODO retwet: Set infection functions on nodes
 
             MapWindow window = new MapWindow(map);
