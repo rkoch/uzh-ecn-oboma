@@ -22,10 +22,29 @@ package ch.uzh.phys.ecn.oboma.map.api;
 import java.util.List;
 
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
+import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
 
 
 public interface INode
         extends IDiseaseTransmittor {
+
+    String getId();
+
+    String getName();
+
+    double getLatitude();
+
+    double getLongitude();
+
+    boolean isConnecting();
+
+    List<INode> getDestinations();
+
+    void addDestination(INode pNode);
+
+    List<INode> getOrigins();
+
+    void addOrigin(INode pNode);
 
     boolean place(Agent pAgent);
 
@@ -34,5 +53,7 @@ public interface INode
     List<Agent> getAllAgents();
 
     List<Agent> getLeavingAgents();
+
+    void setTransformationFunction(ITransformationFunction pInfectionFunction);
 
 }
