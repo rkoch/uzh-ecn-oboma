@@ -17,14 +17,20 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.functions.nop;
 
-import java.util.List;
+import ch.uzh.phys.ecn.oboma.agents.model.Agent;
+import ch.uzh.phys.ecn.oboma.common.InfectionState;
+import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
+import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class NopTransformationFunction
+        implements ITransformationFunction {
 
-    public List<INode> getNodes();
+    @Override
+    public InfectionState apply(Agent pAgent, INode pNode) {
+        return pAgent.getState();
+    }
 
 }

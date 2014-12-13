@@ -17,14 +17,26 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.map.view;
 
-import java.util.List;
+import org.jxmapviewer.viewer.DefaultWaypoint;
+import org.jxmapviewer.viewer.GeoPosition;
+
+import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class NodeWaypoint
+        extends DefaultWaypoint {
 
-    public List<INode> getNodes();
+    private final INode mNode;
+
+    public NodeWaypoint(GeoPosition pCoord, INode pNode) {
+        super(pCoord);
+        mNode = pNode;
+    }
+
+    public INode getNode() {
+        return mNode;
+    }
 
 }

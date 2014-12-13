@@ -17,14 +17,35 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.map.view;
 
-import java.util.List;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.WaypointRenderer;
+
+import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class TrackRenderer
+        implements WaypointRenderer<NodeWaypoint> {
 
-    public List<INode> getNodes();
+
+    @Override
+    public void paintWaypoint(Graphics2D pG, JXMapViewer pMap, NodeWaypoint pWaypoint) {
+        INode dest = pWaypoint.getNode().getDestinations().get(0);
+        INode orig = pWaypoint.getNode().getOrigins().get(0);
+
+        Point2D start = pMap.getTileFactory().geoToPixel(new GeoPosition(orig.getLatitude(), orig.getLongitude()), pMap.getZoom());
+        Point2D end = pMap.getTileFactory().geoToPixel(new GeoPosition(dest.getLatitude(), dest.getLongitude()), pMap.getZoom());
+
+        // Draw station point
+        pG.setColor(Color.BLACK);
+        pG.draw(new Line2D.Double(start, end));
+    }
 
 }

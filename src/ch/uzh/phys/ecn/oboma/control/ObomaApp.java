@@ -17,14 +17,41 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.control;
 
-import java.util.List;
+import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
+import ch.uzh.phys.ecn.oboma.map.api.MapFactory;
+import ch.uzh.phys.ecn.oboma.map.view.MapWindow;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class ObomaApp {
 
-    public List<INode> getNodes();
+    public void run(String... pArgs) {
+        try {
+            INodeMap map = MapFactory.buildDefaultSBBMap();
+
+            // TODO rma: Add agents to map
+            // TODO retwet: Set infection functions on nodes
+
+            MapWindow window = new MapWindow(map);
+            window.setVisible(true);
+
+            while (true) {
+                map.preelapse();
+                map.infect();
+                map.postelapse();
+                window.repaint();
+                Thread.sleep(1000);
+            }
+        } catch (Exception pEx) {
+            pEx.printStackTrace();
+        }
+    }
+
+
+    public static void main(String... pArgs) {
+        ObomaApp app = new ObomaApp();
+        app.run(pArgs);
+    }
 
 }

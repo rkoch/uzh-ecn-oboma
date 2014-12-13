@@ -17,14 +17,35 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.map.view;
 
-import java.util.List;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.viewer.WaypointRenderer;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class StationRenderer
+        implements WaypointRenderer<NodeWaypoint> {
 
-    public List<INode> getNodes();
+    private static final double CONST_SIZE = 100d;
+
+    @Override
+    public void paintWaypoint(Graphics2D pG, JXMapViewer pMap, NodeWaypoint pWaypoint) {
+        Point2D point = pMap.getTileFactory().geoToPixel(pWaypoint.getPosition(), pMap.getZoom());
+
+        double stationSize = CONST_SIZE / pMap.getZoom();
+
+        // Draw station point
+        pG.setColor(Color.BLACK);
+        pG.fill(new Ellipse2D.Double(point.getX() - stationSize / 2, point.getY() - stationSize / 2, stationSize, stationSize));
+
+        // Draw circles around
+        pG.setColor(Color.RED);
+        pG.draw(new Ellipse2D.Double(point.getX() - stationSize / 2 - 5, point.getY() - stationSize / 2 - 5, stationSize + 5, stationSize + 5));
+    }
 
 }

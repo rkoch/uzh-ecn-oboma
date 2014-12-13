@@ -33,6 +33,7 @@ import lombok.EqualsAndHashCode;
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
+import ch.uzh.phys.ecn.oboma.functions.nop.NopTransformationFunction;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 
 
@@ -40,25 +41,34 @@ import ch.uzh.phys.ecn.oboma.map.api.INode;
 public class Node
         implements INode {
 
-    private final String                  mId;
-    private double                        mLatitude;
-    private double                        mLongitude;
-    private final double                  mWeight;
-    private final int                     mTimeBlocked;
-    private final int                     mSize;
-    private final ITransformationFunction mInfectionFunction;
-    private final Map<String, Node>       mDestinationNodes;
+    private final String               mId;
+    private final String               mName;
+    private final double               mLatitude;
+    private final double               mLongitude;
+    private final int                  mTimeBlocked;
+    private final int                  mSize;
+    private ITransformationFunction    mInfectionFunction;
+    private final Map<String, INode>   mDestinationNodes;
+    private final Map<String, INode>   mOriginNodes;
 
-    private final List<AgentPlacement>    mAgents;
-    private final List<Agent>             mLeavingAgents;    // No queue (list based fifo-if-free-seats)
+    private final List<AgentPlacement> mAgents;
+    private final List<Agent>          mLeavingAgents;    // No queue (list based fifo-if-free-seats)
 
 
-    public Node(String pId, double pWeight, int pTimeBlocked, int pSize, ITransformationFunction pInfectionFunction) {
+    public Node(String pId, String pName, double pLat, double pLng, int pTimeBlocked, int pSize) {
+        this(pId, pName, pLat, pLng, pTimeBlocked, pSize, new NopTransformationFunction());
+    }
+
+    public Node(String pId, String pName, double pLat, double pLng, int pTimeBlocked, int pSize, ITransformationFunction pInfectionFunction) {
+        checkArgument(pId != null);
+        checkArgument(pName != null);
         checkArgument(pSize >= 0);
         checkArgument(pInfectionFunction != null);
 
         mId = pId;
-        mWeight = pWeight;
+        mName = pName;
+        mLatitude = pLat;
+        mLongitude = pLng;
         mTimeBlocked = pTimeBlocked;
         mSize = pSize;
         mInfectionFunction = pInfectionFunction;
@@ -66,12 +76,53 @@ public class Node
         mAgents = new ArrayList<>();
         mLeavingAgents = new ArrayList<>();
         mDestinationNodes = new HashMap<>();
+        mOriginNodes = new HashMap<>();
     }
 
 
     @Override
-    public int countFreeSeats() {
-        return mSize == 0 ? Integer.MAX_VALUE : (mSize - mAgents.size());
+    public String getId() {
+        return mId;
+    }
+
+    @Override
+    public String getName() {
+        return mName;
+    }
+
+    @Override
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    @Override
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    @Override
+    public boolean isConnecting() {
+        return false;
+    }
+
+    @Override
+    public List<INode> getDestinations() {
+        return new ArrayList<>(mDestinationNodes.values());
+    }
+
+    @Override
+    public void addDestination(INode pNode) {
+        mDestinationNodes.put(pNode.getId(), pNode);
+    }
+
+    @Override
+    public List<INode> getOrigins() {
+        return new ArrayList<>(mOriginNodes.values());
+    }
+
+    @Override
+    public void addOrigin(INode pNode) {
+        mOriginNodes.put(pNode.getId(), pNode);
     }
 
     @Override
@@ -86,6 +137,10 @@ public class Node
         return false;
     }
 
+    @Override
+    public int countFreeSeats() {
+        return mSize == 0 ? Integer.MAX_VALUE : (mSize - mAgents.size());
+    }
 
     @Override
     public List<Agent> getAllAgents() {
@@ -102,9 +157,17 @@ public class Node
         return new ArrayList<Agent>(mLeavingAgents);
     }
 
+    @Override
+    public void setTransformationFunction(ITransformationFunction pInfectionFunction) {
+        mInfectionFunction = pInfectionFunction != null ? pInfectionFunction : new NopTransformationFunction();
+    }
+
 
     @Override
     public void preelapse() {
+        // timestep on this node starts
+        mInfectionFunction.onBeforeTimestep(this);
+
         Iterator<AgentPlacement> itr = mAgents.iterator();
         while (itr.hasNext()) {
             AgentPlacement ap = itr.next();
@@ -131,8 +194,10 @@ public class Node
                 itr.remove();
             }
         }
-    }
 
+        // timestep on this node is done
+        mInfectionFunction.onAfterTimestep(this);
+    }
 
     @Override
     public void infect() {

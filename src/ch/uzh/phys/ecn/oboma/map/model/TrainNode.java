@@ -17,14 +17,27 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ch.uzh.phys.ecn.oboma.map.api;
+package ch.uzh.phys.ecn.oboma.map.model;
 
-import java.util.List;
+import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
+import ch.uzh.phys.ecn.oboma.functions.nop.NopTransformationFunction;
 
 
-public interface INodeMap
-        extends IDiseaseTransmittor {
+public class TrainNode
+        extends Node {
 
-    public List<INode> getNodes();
+    public TrainNode(String pId, String pName, double pLat, double pLng, int pTimeBlocked, int pSize) {
+        super(pId, pName, pLat, pLng, pTimeBlocked, pSize, new NopTransformationFunction());
+    }
+
+    public TrainNode(String pId, String pName, double pLat, double pLng, int pTimeBlocked, int pSize, ITransformationFunction pInfectionFunction) {
+        super(pId, pName, pLat, pLng, pTimeBlocked, pSize, pInfectionFunction);
+    }
+
+
+    @Override
+    public boolean isConnecting() {
+        return true;
+    }
 
 }
