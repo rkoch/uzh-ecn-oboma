@@ -19,6 +19,12 @@
  */
 package ch.uzh.phys.ecn.oboma.control;
 
+import java.util.List;
+
+import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunction;
+import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunctionStation;
+import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunctionTrain;
+import ch.uzh.phys.ecn.oboma.map.api.INode;
 import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 import ch.uzh.phys.ecn.oboma.map.api.MapFactory;
 import ch.uzh.phys.ecn.oboma.map.view.MapWindow;
@@ -32,6 +38,7 @@ public class ObomaApp {
 
             // TODO rma: Add agents to map
             // TODO retwet: Set infection functions on nodes
+            setInfectionFunctions(map);
 
             MapWindow window = new MapWindow(map);
             window.setVisible(true);
@@ -45,6 +52,23 @@ public class ObomaApp {
             }
         } catch (Exception pEx) {
             pEx.printStackTrace();
+        }
+    }
+    
+    private void setInfectionFunctions(INodeMap pMap){
+        List<INode> nodes = pMap.getNodes();
+        
+        for(INode node : nodes){
+            SISFunction function;
+            
+            if(node.isConnecting()){
+                function = new SISFunctionTrain(); 
+            } else {
+                function = new SISFunctionStation();
+            }
+            
+            node.setTransformationFunction(function);
+            
         }
     }
 
