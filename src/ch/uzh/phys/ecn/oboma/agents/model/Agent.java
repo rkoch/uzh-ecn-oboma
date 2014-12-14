@@ -75,12 +75,34 @@ public class Agent
             return pCurrentNodeId;
         }
 
-        while (routeIterator.hasNext()) {
+        while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.FORWARD)) {
             String connectionKey = routeIterator.next().getKey();
             String[] keys = connectionKey.split("-");
 
             if (keys[0].equals(pCurrentNodeId)) {
                 // target node id
+                return connectionKey;
+            }
+        }
+
+        while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
+            String connectionKey = routeIterator.next().getKey();
+            String[] keys = connectionKey.split("-");
+
+            if (keys[1].equals(pCurrentNodeId)) {
+                // source node id with currentNodeId as target
+                // -> getNode with sourceNode as target, which represents node before
+                ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
+                while (backwardsIterator.hasNext()) {
+                    String previousNodeKey = routeIterator.next().getKey();
+                    String[] prevKeys = previousNodeKey.split("-");
+
+                    if (prevKeys[1].equals(keys[0])) {
+                        mRouteDirection = RouteDirection.BACKWARDS;
+                        return previousNodeKey;
+                    }
+                }
+
                 return connectionKey;
             }
         }
