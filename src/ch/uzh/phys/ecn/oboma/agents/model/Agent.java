@@ -71,6 +71,10 @@ public class Agent
     public String getNextWaypoint(String pCurrentNodeId) {
         ListIterator<Pair<String, Integer>> routeIterator = mRoute.listIterator();
 
+        if (mRoute.isEmpty()) {
+            return pCurrentNodeId;
+        }
+
         boolean foundCurrentNode = false;
         while (!foundCurrentNode) {
             if (routeIterator.hasNext() &&
