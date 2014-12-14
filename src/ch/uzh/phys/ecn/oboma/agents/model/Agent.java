@@ -84,9 +84,7 @@ public class Agent
                 String connectionKey = routeIterator.next().getKey();
                 String[] keys = connectionKey.split("-");
 
-                System.out.println("key: " + keys[0] + ", pCurrentNodeId:" + pCurrentNodeId);
                 if (keys[0].equals(pCurrentNodeId)) {
-                    System.out.println("Equals: " + keys[0] + ", " + pCurrentNodeId);
                     // target node id
                     return connectionKey;
                 }
