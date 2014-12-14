@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import lombok.EqualsAndHashCode;
+
+import org.apache.commons.lang3.StringUtils;
+
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.functions.api.ITransformationFunction;
@@ -186,7 +189,13 @@ public class Node
         Iterator<Agent> itr = mLeavingAgents.iterator();
         while (itr.hasNext()) {
             Agent a = itr.next();
-            INode dest = mDestinationNodes.get(a.getNextWaypoint(mId));
+            String nextWaypoint = a.getNextWaypoint(mId);
+            INode dest;
+            if (StringUtils.equals(mId, nextWaypoint)) {
+                dest = this;
+            } else {
+                dest = mDestinationNodes.get(nextWaypoint);
+            }
 
             checkState(dest != null);
 
