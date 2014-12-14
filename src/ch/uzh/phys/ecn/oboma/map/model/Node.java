@@ -191,7 +191,7 @@ public class Node
             Agent a = itr.next();
             String nextWaypoint = a.getNextWaypoint(mId);
             INode dest;
-            if (StringUtils.equals(mId, nextWaypoint)) {
+            if (StringUtils.equals(mId, nextWaypoint) || (nextWaypoint == null)) {
                 dest = this;
             } else {
                 dest = mDestinationNodes.get(nextWaypoint);
