@@ -21,6 +21,7 @@ package ch.uzh.phys.ecn.oboma.control;
 
 import java.util.List;
 
+import ch.uzh.phys.ecn.oboma.agents.api.AgentFactory;
 import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunction;
 import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunctionStation;
 import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunctionTrain;
@@ -36,8 +37,10 @@ public class ObomaApp {
         try {
             INodeMap map = MapFactory.buildDefaultSBBMap();
 
-            // TODO rma: Add agents to map
-            // TODO retwet: Set infection functions on nodes
+            // Add agents to map
+            AgentFactory.placeAgents(map);
+
+            // Set infection functions on nodes
             setInfectionFunctions(map);
 
             MapWindow window = new MapWindow(map);
@@ -54,21 +57,21 @@ public class ObomaApp {
             pEx.printStackTrace();
         }
     }
-    
-    private void setInfectionFunctions(INodeMap pMap){
+
+    private void setInfectionFunctions(INodeMap pMap) {
         List<INode> nodes = pMap.getNodes();
-        
-        for(INode node : nodes){
+
+        for (INode node : nodes) {
             SISFunction function;
-            
-            if(node.isConnecting()){
-                function = new SISFunctionTrain(); 
+
+            if (node.isConnecting()) {
+                function = new SISFunctionTrain();
             } else {
                 function = new SISFunctionStation();
             }
-            
+
             node.setTransformationFunction(function);
-            
+
         }
     }
 

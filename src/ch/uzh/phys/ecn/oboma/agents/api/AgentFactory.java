@@ -1,8 +1,11 @@
 package ch.uzh.phys.ecn.oboma.agents.api;
 
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Logger;
 
 import ch.uzh.phys.ecn.oboma.agents.build.AgentBuilder;
+import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 
@@ -12,21 +15,33 @@ public class AgentFactory {
     private final static double INFECTION_PROBABILITY = 0.25;
     private final static double IMMUNE_PROBABILITY    = 0.25;
 
-    private final static int    POPULATION_FACTOR     = 100;
+    private final static int    POPULATION_FACTOR     = 10000;
+
+    private static final Logger LOGGER                = Logger.getLogger(AgentFactory.class.getName());
+
 
     public static void placeAgents(INodeMap nodeMap) {
+        for (INode node : nodeMap.getNodes()) {
+            if (node.isConnecting()) {
+                // only place agents on stations
+                continue;
+            }
 
-        // TODO: foreach node in nodeMap
-//        INode node = null;
-//
-//        // number of agents on a node is factor * amountOfConnectionsInNode
-//        int amountOfAgents = POPULATION_FACTOR * node.getDestinationNodes().size();
-//
-//        List<IAgent> agents = AgentBuilder.generateAgents(amountOfAgents, INFECTION_PROBABILITY,
-//                IMMUNE_PROBABILITY, node);
-//
-//        for (IAgent agent : agents) {
-//            node.place(agent);
-//        }
+            int maxAmountOfAgents = 1000;
+            int minAmountOfAgents = 10;
+            int amountOfAgents = POPULATION_FACTOR * node.getDestinations().size();
+            Random rand = new Random();
+            amountOfAgents = (amountOfAgents > 1) ? amountOfAgents : rand.nextInt((maxAmountOfAgents - minAmountOfAgents) + 1) + minAmountOfAgents;
+
+            List<Agent> generatedAgents = AgentBuilder.generateAgents(amountOfAgents, INFECTION_PROBABILITY, IMMUNE_PROBABILITY, node);
+
+            for (Agent agent : generatedAgents) {
+                node.place(agent);
+            }
+
+            LOGGER.info(generatedAgents.size() + " agents added to Node with Id " + node.getId());
+
+        }
+        LOGGER.info("Agent placing done");
     }
 }

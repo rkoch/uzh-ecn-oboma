@@ -21,7 +21,6 @@ package ch.uzh.phys.ecn.oboma.agents.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -66,21 +65,19 @@ public class Agent
             }
         }
 
-        return 0;
+        return 1;
     }
 
     public String getNextWaypoint(String pCurrentNodeId) {
-        // get position of pCurrentNode
-        int currentNodePosition = 0;
-        for (; currentNodePosition < mRoute.size(); currentNodePosition++) {
-            if (mRoute.get(currentNodePosition).getKey().equals(pCurrentNodeId)) {
-                break;
+        ListIterator<Pair<String, Integer>> routeIterator = mRoute.listIterator();
+
+        boolean foundCurrentNode = false;
+        while (!foundCurrentNode) {
+            if (routeIterator.hasNext() &&
+                    routeIterator.next().getKey().equals(pCurrentNodeId)) {
+                foundCurrentNode = true;
             }
         }
-
-        // get position after currentNodePosition
-        ListIterator<Pair<String, Integer>> routeIterator = mRoute.listIterator(currentNodePosition);
-
 
         if (mRouteDirection.equals(RouteDirection.FORWARD)) {
             if (routeIterator.hasNext()) {
