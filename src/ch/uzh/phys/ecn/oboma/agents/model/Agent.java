@@ -75,39 +75,49 @@ public class Agent
             return pCurrentNodeId;
         }
 
-        while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.FORWARD)) {
-            String connectionKey = routeIterator.next().getKey();
-            String[] keys = connectionKey.split("-");
 
-            if (keys[0].equals(pCurrentNodeId)) {
-                // target node id
-                return connectionKey;
-            }
-        }
+        if (pCurrentNodeId.contains("-")) {
+            String[] keys = pCurrentNodeId.split("-");
+            return keys[1];
+        } else {
+            while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.FORWARD)) {
+                String connectionKey = routeIterator.next().getKey();
+                String[] keys = connectionKey.split("-");
 
-        while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
-            String connectionKey = routeIterator.next().getKey();
-            String[] keys = connectionKey.split("-");
-
-            if (keys[1].equals(pCurrentNodeId)) {
-                // source node id with currentNodeId as target
-                // -> getNode with sourceNode as target, which represents node before
-                ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
-                while (backwardsIterator.hasNext()) {
-                    String previousNodeKey = routeIterator.next().getKey();
-                    String[] prevKeys = previousNodeKey.split("-");
-
-                    if (prevKeys[1].equals(keys[0])) {
-                        mRouteDirection = RouteDirection.BACKWARDS;
-                        return previousNodeKey;
-                    }
+                System.out.println("key: " + keys[0] + ", pCurrentNodeId:" + pCurrentNodeId);
+                if (keys[0].equals(pCurrentNodeId)) {
+                    System.out.println("Equals: " + keys[0] + ", " + pCurrentNodeId);
+                    // target node id
+                    return connectionKey;
                 }
+            }
 
-                return connectionKey;
+            while (routeIterator.hasPrevious() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
+                String connectionKey = routeIterator.next().getKey();
+                String[] keys = connectionKey.split("-");
+
+                if (keys[1].equals(pCurrentNodeId)) {
+                    // source node id with currentNodeId as target
+                    // -> getNode with sourceNode as target, which represents node before
+                    ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
+                    while (backwardsIterator.hasNext()) {
+                        String previousNodeKey = routeIterator.next().getKey();
+                        String[] prevKeys = previousNodeKey.split("-");
+
+                        if (prevKeys[1].equals(keys[0])) {
+                            mRouteDirection = RouteDirection.BACKWARDS;
+                            return previousNodeKey;
+                        }
+                    }
+
+                    return connectionKey;
+                }
             }
         }
 
-        throw new IllegalStateException("No route found for given nodeId");
+
+
+        throw new IllegalStateException("No route found for given nodeId " + pCurrentNodeId);
     }
 
     public InfectionState getState() {
