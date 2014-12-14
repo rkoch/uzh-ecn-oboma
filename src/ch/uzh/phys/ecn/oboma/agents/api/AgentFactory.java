@@ -34,7 +34,7 @@ public class AgentFactory {
             amountOfAgents = (amountOfAgents > 1) ? amountOfAgents : rand.nextInt((MAX_POPULATION - minAmountOfAgents) + 1) + minAmountOfAgents;
             amountOfAgents = Math.min(amountOfAgents, MAX_POPULATION);
 
-            List<Agent> generatedAgents = AgentBuilder.generateAgents(amountOfAgents, INFECTION_PROBABILITY, IMMUNE_PROBABILITY, node);
+            List<Agent> generatedAgents = AgentBuilder.generateAgents(amountOfAgents, INFECTION_PROBABILITY, IMMUNE_PROBABILITY, nodeMap, node);
 
             for (Agent agent : generatedAgents) {
                 node.place(agent);

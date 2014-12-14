@@ -75,37 +75,17 @@ public class Agent
             return pCurrentNodeId;
         }
 
-        boolean foundCurrentNode = false;
-        while (!foundCurrentNode) {
-            if (routeIterator.hasNext() &&
-                    routeIterator.next().getKey().equals(pCurrentNodeId)) {
-                foundCurrentNode = true;
+        while (routeIterator.hasNext()) {
+            String connectionKey = routeIterator.next().getKey();
+            String[] keys = connectionKey.split("-");
+
+            if (keys[0].equals(pCurrentNodeId)) {
+                // target node id
+                return connectionKey;
             }
         }
 
-        if (mRouteDirection.equals(RouteDirection.FORWARD)) {
-            if (routeIterator.hasNext()) {
-                // agent can still go forward
-                return routeIterator.next().getKey();
-            } else if (routeIterator.hasPrevious()) {
-                // we reached the end of the list
-                // -> agent must going backwards
-                mRouteDirection = RouteDirection.BACKWARDS;
-                return routeIterator.previous().getKey();
-            }
-        } else {
-            if (routeIterator.hasPrevious()) {
-                // agent can still go backwards
-                return routeIterator.previous().getKey();
-            } else if (routeIterator.hasNext()) {
-                // agent reached start node
-                // -> must going forwards
-                mRouteDirection = RouteDirection.FORWARD;
-                return routeIterator.next().getKey();
-            }
-        }
-
-        throw new IllegalStateException("Given Node does not exist");
+        throw new IllegalStateException("No route found for given nodeId");
     }
 
     public InfectionState getState() {
