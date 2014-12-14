@@ -37,14 +37,14 @@ public class AgentBuilder {
     private static List<Pair<String, Integer>> generateRoute(INode sourceNode) {
         // amount of nodes on route is reverse-proportional to the size of the city
         // size of the city is amount of outgoing connections.
-        Random randomGenerator = new Random();
-        int nrOfTravellingNodes = 0;
-        if (randomGenerator.nextInt((int) (TRAVELNODES_DEVIATION_PROBABILITY * 100)) == 0) {
+        Random rand = new Random();
+        int nrOfTravellingNodes = DEFAULT_AMOUNT_OF_TRAVELNODES;
+        if (rand.nextGaussian() < TRAVELNODES_DEVIATION_PROBABILITY) {
             int minNodesToTravel = 1;
             int maxNodesToTravel = 100;
-            nrOfTravellingNodes = (randomGenerator.nextInt((maxNodesToTravel - minNodesToTravel) + 1) + minNodesToTravel) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
+            nrOfTravellingNodes = (rand.nextInt((maxNodesToTravel - minNodesToTravel) + 1) + minNodesToTravel) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
         } else {
-            nrOfTravellingNodes = DEFAULT_AMOUNT_OF_TRAVELNODES / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
+            nrOfTravellingNodes = (int) Math.round(((DEFAULT_AMOUNT_OF_TRAVELNODES * 1d) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1)));
         }
 
         return getRoute(new ArrayList<Pair<String, Integer>>(), sourceNode, nrOfTravellingNodes);
