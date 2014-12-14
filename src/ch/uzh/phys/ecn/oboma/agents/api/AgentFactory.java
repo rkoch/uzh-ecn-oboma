@@ -13,9 +13,10 @@ import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 public class AgentFactory {
 
     private final static double INFECTION_PROBABILITY = 0.25;
-    private final static double IMMUNE_PROBABILITY    = 0.25;
+    private final static double IMMUNE_PROBABILITY    = 0.10;
 
-    private final static int    POPULATION_FACTOR     = 10000;
+    private final static int    POPULATION_FACTOR     = 10;
+    private final static int    MAX_POPULATION        = 100;
 
     private static final Logger LOGGER                = Logger.getLogger(AgentFactory.class.getName());
 
@@ -27,11 +28,11 @@ public class AgentFactory {
                 continue;
             }
 
-            int maxAmountOfAgents = 1000;
             int minAmountOfAgents = 10;
             int amountOfAgents = POPULATION_FACTOR * node.getDestinations().size();
             Random rand = new Random();
-            amountOfAgents = (amountOfAgents > 1) ? amountOfAgents : rand.nextInt((maxAmountOfAgents - minAmountOfAgents) + 1) + minAmountOfAgents;
+            amountOfAgents = (amountOfAgents > 1) ? amountOfAgents : rand.nextInt((MAX_POPULATION - minAmountOfAgents) + 1) + minAmountOfAgents;
+            amountOfAgents = Math.min(amountOfAgents, MAX_POPULATION);
 
             List<Agent> generatedAgents = AgentBuilder.generateAgents(amountOfAgents, INFECTION_PROBABILITY, IMMUNE_PROBABILITY, node);
 

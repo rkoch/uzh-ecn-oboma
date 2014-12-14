@@ -83,11 +83,11 @@ public class AgentBuilder {
     private static InfectionState getInfectionState(double pInfectionProbability, double pImmuneProbability) {
         Random r = new Random();
 
-        if (r.nextInt((int) (pInfectionProbability * 100)) == 0) {
+        if (r.nextGaussian() < pInfectionProbability) {
             return InfectionState.INFECTED;
         }
 
-        if (r.nextInt((int) (pImmuneProbability * 100)) == 0) {
+        if (r.nextGaussian() < pImmuneProbability) {
             return InfectionState.IMMUNE;
         }
 
