@@ -23,29 +23,82 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.WaypointRenderer;
+
+import ch.uzh.phys.ecn.oboma.agents.model.Agent;
 
 
 public class StationRenderer
         implements WaypointRenderer<NodeWaypoint> {
 
     private static final double CONST_SIZE = 100d;
+    private static final double MAX_SIZE   = 400d;
 
     @Override
     public void paintWaypoint(Graphics2D pG, JXMapViewer pMap, NodeWaypoint pWaypoint) {
         Point2D point = pMap.getTileFactory().geoToPixel(pWaypoint.getPosition(), pMap.getZoom());
 
         double stationSize = CONST_SIZE / pMap.getZoom();
+        double maxHeight = MAX_SIZE / pMap.getZoom();
+        double singleWidth = maxHeight / 4;
 
         // Draw station point
         pG.setColor(Color.BLACK);
         pG.fill(new Ellipse2D.Double(point.getX() - stationSize / 2, point.getY() - stationSize / 2, stationSize, stationSize));
 
-        // Draw circles around
+        // base point
+        double bottom = point.getY() - stationSize;
+        double left = point.getX() - (maxHeight / 2);
+
+        int immune = 0;
+        int susceptible = 0;
+        int infected = 0;
+        int recovered = 0;
+        List<Agent> agents = pWaypoint.getNode().getAllAgents();
+        for (Agent a : agents) {
+            switch (a.getState()) {
+                case IMMUNE:
+                    immune++;
+                    break;
+                case INFECTED:
+                    infected++;
+                    break;
+                case RECOVERED:
+                    recovered++;
+                    break;
+                case SUSCEPTIBLE:
+                    susceptible++;
+                    break;
+            }
+        }
+        int all = immune + susceptible + infected + recovered;
+
+        // draw immune -> blue
+        double height = ((double) immune) / ((double) all) * maxHeight;
+        pG.setColor(Color.BLUE);
+        pG.fill(new Rectangle2D.Double(left, bottom - height, singleWidth, height));
+
+        // draw susceptible -> orange
+        left += singleWidth;
+        height = ((double) susceptible) / ((double) all) * maxHeight;
+        pG.setColor(Color.ORANGE);
+        pG.fill(new Rectangle2D.Double(left, bottom - height, singleWidth, height));
+
+        // draw infected -> red
+        left += singleWidth;
+        height = ((double) infected) / ((double) all) * maxHeight;
         pG.setColor(Color.RED);
-        pG.draw(new Ellipse2D.Double(point.getX() - stationSize / 2 - 5, point.getY() - stationSize / 2 - 5, stationSize + 5, stationSize + 5));
+        pG.fill(new Rectangle2D.Double(left, bottom - height, singleWidth, height));
+
+        // draw recovered -> green
+        left += singleWidth;
+        height = ((double) recovered) / ((double) all) * maxHeight;
+        pG.setColor(Color.GREEN);
+        pG.fill(new Rectangle2D.Double(left, bottom - height, singleWidth, height));
     }
 
 }

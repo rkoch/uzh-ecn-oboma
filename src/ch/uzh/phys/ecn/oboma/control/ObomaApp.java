@@ -20,6 +20,7 @@
 package ch.uzh.phys.ecn.oboma.control;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import ch.uzh.phys.ecn.oboma.agents.api.AgentFactory;
 import ch.uzh.phys.ecn.oboma.functions.sisfunction.SISFunction;
@@ -32,6 +33,8 @@ import ch.uzh.phys.ecn.oboma.map.view.MapWindow;
 
 
 public class ObomaApp {
+
+    private static final Logger LOGGER = Logger.getLogger(ObomaApp.class.getName());
 
     public void run(String... pArgs) {
         try {
@@ -52,6 +55,7 @@ public class ObomaApp {
                 map.postelapse();
                 window.repaint();
                 Thread.sleep(1000);
+                LOGGER.info("TIMESTEP");
             }
         } catch (Exception pEx) {
             pEx.printStackTrace();
