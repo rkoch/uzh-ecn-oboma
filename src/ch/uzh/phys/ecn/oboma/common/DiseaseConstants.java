@@ -3,10 +3,10 @@ package ch.uzh.phys.ecn.oboma.common;
 
 public interface DiseaseConstants {
 
-    double TRAIN_INFECTION_RATE              = 0.50d;
-    double STATION_INFECTION_RATE            = 0.20d;
+    double TRAIN_INFECTION_RATE              = 0.08d;
+    double STATION_INFECTION_RATE            = 0.04d;
 
-    double STATION_RECOVERY_RATE             = 0.005d;
+    double STATION_RECOVERY_RATE             = 0.01d;
     double TRAIN_RECOVERY_RATE               = 0d;
 
 

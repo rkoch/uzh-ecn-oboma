@@ -17,6 +17,7 @@ public class AgentFactory {
 
 
     public static void placeAgents(INodeMap nodeMap) {
+        int countAgents = 0;
         for (INode node : nodeMap.getNodes()) {
             if (node.isConnecting() || node.getOrigins().isEmpty() || node.getDestinations().isEmpty()) {
                 // only place agents on stations
@@ -25,6 +26,7 @@ public class AgentFactory {
 
             int minAmountOfAgents = 10;
             int amountOfAgents = DiseaseConstants.POPULATION_FACTOR * node.getDestinations().size();
+            countAgents+= amountOfAgents;
             Random rand = new Random();
             amountOfAgents = (amountOfAgents > 1) ? amountOfAgents : rand.nextInt((DiseaseConstants.MAX_POPULATION - minAmountOfAgents) + 1) + minAmountOfAgents;
             amountOfAgents = Math.min(amountOfAgents, DiseaseConstants.MAX_POPULATION);
@@ -38,6 +40,6 @@ public class AgentFactory {
             LOGGER.info(generatedAgents.size() + " agents added to Node with Id " + node.getId());
 
         }
-        LOGGER.info("Agent placing done");
+        LOGGER.info("Agent placing done: " + countAgents + " agents placed.");
     }
 }

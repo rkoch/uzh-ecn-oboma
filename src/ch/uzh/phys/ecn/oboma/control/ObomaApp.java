@@ -49,6 +49,8 @@ public class ObomaApp {
             MapWindow window = new MapWindow(map);
             window.setVisible(true);
 
+            Thread.sleep(15000);
+
             while (true) {
                 map.preelapse();
                 map.infect();
