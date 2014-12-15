@@ -1,18 +1,18 @@
 package ch.uzh.phys.ecn.oboma.functions.sisfunction;
 
-import ch.uzh.phys.ecn.oboma.common.DiseaseConstants;
 import ch.uzh.phys.ecn.oboma.functions.api.IODE;
 
 
 public class ODESIR
         implements IODE {
 
-    private double   mInfectionRate;
-    private double   mRecoveryRate = DiseaseConstants.RECOVERY_RATE;
-    private double[] dy            = new double[3];
+    private final double mInfectionRate;
+    private final double mRecoveryRate;
+    private double[]     dy = new double[3];
 
-    public ODESIR(double pInfectionRate) {
+    public ODESIR(final double pInfectionRate, final double pRecoveryRate) {
         mInfectionRate = pInfectionRate;
+        mRecoveryRate = pRecoveryRate;
     }
 
     @Override

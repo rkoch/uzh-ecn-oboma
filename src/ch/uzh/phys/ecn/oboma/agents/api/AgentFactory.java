@@ -13,12 +13,12 @@ import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 
 public class AgentFactory {
 
-    private static final Logger LOGGER                = Logger.getLogger(AgentFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AgentFactory.class.getName());
 
 
     public static void placeAgents(INodeMap nodeMap) {
         for (INode node : nodeMap.getNodes()) {
-            if (node.isConnecting()) {
+            if (node.isConnecting() || node.getOrigins().isEmpty() || node.getDestinations().isEmpty()) {
                 // only place agents on stations
                 continue;
             }

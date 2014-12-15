@@ -20,12 +20,27 @@ import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 
 public class AgentBuilder {
 
+    private static final String       ZURICH_NODE_ID = "8503000";
+    private static final String       BERN_NODE_ID   = "8507000";
+
+    private static final List<String> stations       = new ArrayList<>();
+
+    static {
+        stations.add(ZURICH_NODE_ID);
+        stations.add(BERN_NODE_ID);
+    }
+
     public static List<Agent> generateAgents(int pNumberOfAgents, double pInfectionProbability, double pImuneProbability, INodeMap pNodeMap, INode pSourceNode) {
         List<Agent> generatedAgents = new ArrayList<>();
 
         for (int i = 0; i < pNumberOfAgents; i++) {
             Agent agent = new Agent(UUID.randomUUID().toString(), generateRoute(pNodeMap, pSourceNode));
-            agent.setState(getInfectionState(pInfectionProbability, pImuneProbability));
+
+            if (stations.contains(pSourceNode.getId())) {
+                agent.setState(getInfectionState(pInfectionProbability, pImuneProbability));
+            } else {
+                agent.setState(InfectionState.SUSCEPTIBLE);
+            }
             generatedAgents.add(agent);
         }
 
@@ -37,12 +52,14 @@ public class AgentBuilder {
         // size of the city is amount of outgoing connections.
         Random rand = new Random();
         int nrOfTravellingNodes = DiseaseConstants.DEFAULT_AMOUNT_OF_TRAVELNODES;
-        if (rand.nextGaussian() < DiseaseConstants.TRAVELNODES_DEVIATION_PROBABILITY) {
+        if (rand.nextDouble() < DiseaseConstants.TRAVELNODES_DEVIATION_PROBABILITY) {
             int minNodesToTravel = 1;
             int maxNodesToTravel = 100;
-            nrOfTravellingNodes = (rand.nextInt((maxNodesToTravel - minNodesToTravel) + 1) + minNodesToTravel) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
+            nrOfTravellingNodes = (rand.nextInt((maxNodesToTravel - minNodesToTravel) + 1) + minNodesToTravel)
+                    / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
         } else {
-            nrOfTravellingNodes = (int) Math.round(((DiseaseConstants.DEFAULT_AMOUNT_OF_TRAVELNODES * 1d) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1)));
+            nrOfTravellingNodes = (int) Math.round(((DiseaseConstants.DEFAULT_AMOUNT_OF_TRAVELNODES * 1d) / ((sourceNode.getDestinations().size() > 0) ? sourceNode
+                    .getDestinations().size() : 1)));
         }
 
         return getRoute(pNodeMap, sourceNode, new ArrayList<Pair<String, Integer>>(), nrOfTravellingNodes);
@@ -72,7 +89,7 @@ public class AgentBuilder {
         } else {
             // last node reached, agent stays here for about 7 hours
             // each time step represents 15min
-            timeToStay = 4 * 7;
+            timeToStay = 4;
         }
 
         String[] tmpKeys = randomKey.split("-");
@@ -95,11 +112,11 @@ public class AgentBuilder {
     private static InfectionState getInfectionState(double pInfectionProbability, double pImmuneProbability) {
         Random r = new Random();
 
-        if (r.nextGaussian() < pInfectionProbability) {
+        if (r.nextDouble() < pInfectionProbability) {
             return InfectionState.INFECTED;
         }
 
-        if (r.nextGaussian() < pImmuneProbability) {
+        if (r.nextDouble() < pImmuneProbability) {
             return InfectionState.IMMUNE;
         }
 

@@ -10,12 +10,12 @@ public class AgentUtils {
 
     public static double[] getDiseaseDistributionInNode(INode pNode){
         List<Agent> agents = pNode.getAllAgents();
-        
+
         int susceptible = 0;
         int infected = 0;
         int recovered = 0;
         int immune = 0;
-        
+
         for(int i = 0; i < agents.size(); i++){
             if(agents.get(i).getState() == InfectionState.SUSCEPTIBLE){
                 susceptible++;
@@ -27,7 +27,7 @@ public class AgentUtils {
                 immune++;
             }
         }
-        
+
         double diseaseDistribution[] = {susceptible, infected, recovered, immune};
 
         return diseaseDistribution;

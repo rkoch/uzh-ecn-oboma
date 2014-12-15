@@ -13,12 +13,14 @@ public class SISFunctionTrain
         mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2] + mDiseaseDistributionInNode[3]);
 
-        mInfectionPercentage = getPercentage(pNode.getAllAgents().size(), Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
-        mRecoveryPercentage = getPercentage(pNode.getAllAgents().size(), Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
+        mInfectionPercentage = getPercentage(mDiseaseDistributionInNode[0], Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
+        mRecoveryPercentage = 0.05d;
+//        mRecoveryPercentage = getPercentage(mDiseaseDistributionInNode[2], Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
+//        System.out.println(mRecoveryPercentage);
     }
 
     protected double[] calculateSIR(double pSusceptible, double pInfected, double pRecovered) {
-        ODESIR sir = new ODESIR(DiseaseConstants.TRAIN_INFECTION_RATE);
+        ODESIR sir = new ODESIR(DiseaseConstants.TRAIN_INFECTION_RATE, DiseaseConstants.TRAIN_RECOVERY_RATE);
         ODERK2 rk2 = new ODERK2();
 
         double dt = 1;
@@ -31,8 +33,15 @@ public class SISFunctionTrain
         return yn1;
     }
 
-    protected double getPercentage(double pNumberOfAgents, double pNew) {
-        return pNew / pNumberOfAgents;
+    protected double getPercentage(double pOld, double pNew) {
+        if (Double.compare(pOld, 0.0d) == 0.0) {
+            return 0d;
+        }
+        if (pOld > pNew) {
+            return pNew / pOld;
+        } else {
+            return pOld /pNew;
+        }
     }
 
 
