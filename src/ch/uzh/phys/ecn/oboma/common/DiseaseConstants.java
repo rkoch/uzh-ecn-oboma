@@ -6,7 +6,7 @@ public interface DiseaseConstants {
     double TRAIN_INFECTION_RATE              = 0.50d;
     double STATION_INFECTION_RATE            = 0.20d;
 
-    double STATION_RECOVERY_RATE             = 0.5d;
+    double STATION_RECOVERY_RATE             = 0.005d;
     double TRAIN_RECOVERY_RATE               = 0d;
 
 

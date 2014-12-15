@@ -15,7 +15,7 @@ public class SISFunctionStation
 
         mInfectionPercentage = getPercentage(mDiseaseDistributionInNode[0], Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
 //        mRecoveryPercentage = getPercentage(mDiseaseDistributionInNode[2], Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
-        mRecoveryPercentage = 0.05d;
+        mRecoveryPercentage = DiseaseConstants.STATION_RECOVERY_RATE;
         //        System.out.println(mRecoveryPercentage);
     }
 

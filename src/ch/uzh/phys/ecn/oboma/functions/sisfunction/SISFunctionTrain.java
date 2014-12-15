@@ -14,7 +14,7 @@ public class SISFunctionTrain
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2] + mDiseaseDistributionInNode[3]);
 
         mInfectionPercentage = getPercentage(mDiseaseDistributionInNode[0], Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
-        mRecoveryPercentage = 0.05d;
+        mRecoveryPercentage = DiseaseConstants.TRAIN_RECOVERY_RATE;
 //        mRecoveryPercentage = getPercentage(mDiseaseDistributionInNode[2], Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
 //        System.out.println(mRecoveryPercentage);
     }
