@@ -103,7 +103,7 @@ public class Agent
                                     mRouteDirection = RouteDirection.FORWARD;
                                 }
 
-                                return previousNodeId;
+                                return previousKeys[0];
                             }
                         }
                     }
@@ -136,16 +136,15 @@ public class Agent
                         String previousNodeKey = backwardsIterator.next().getKey();
                         String[] prevKeys = previousNodeKey.split("-");
 
-                        if (prevKeys[1].equals(keys[0])) {
-                            if (!routeIterator.hasPrevious()) {
+                        if (prevKeys[1].equals(keys[1])) {
+                            if (!routeIterator.hasNext()) {
                                 mRouteDirection = RouteDirection.FORWARD;
                             }
 
-                            return previousNodeKey;
+                            // return route with direction changed
+                            return prevKeys[0] + "-" + prevKeys[1];
                         }
                     }
-
-                    return connectionKey;
                 }
             }
         }
