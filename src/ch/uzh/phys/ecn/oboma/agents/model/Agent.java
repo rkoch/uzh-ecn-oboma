@@ -23,6 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import lombok.EqualsAndHashCode;
 
@@ -39,9 +40,12 @@ public class Agent
     private final String                      mId;
     private InfectionState                    mState;
     // The list is sorted and contains all waypoints AND preferred time of staying there
-    private final List<Pair<String, Integer>> mRoute;         // NodeId, # Timesteps on the node
+    private final List<Pair<String, Integer>> mRoute;                                                 // NodeId, # Timesteps on the node
 
     private RouteDirection                    mRouteDirection;
+
+    private static final Logger               LOGGER = Logger.getLogger(Agent.class.getName());
+
 
     public Agent(String pId, List<Pair<String, Integer>> pRoute) {
         checkArgument(pId != null);
@@ -77,8 +81,34 @@ public class Agent
 
 
         if (pCurrentNodeId.contains("-")) {
-            String[] keys = pCurrentNodeId.split("-");
-            return keys[1];
+            if (mRouteDirection.equals(RouteDirection.FORWARD)) {
+                String[] keys = pCurrentNodeId.split("-");
+                return keys[1];
+            } else {
+                // look for correct node to get previous node
+                while (routeIterator.hasNext()) {
+                    String connectionKey = routeIterator.next().getKey();
+                    String[] keys = connectionKey.split("-");
+
+                    if (connectionKey.equals(pCurrentNodeId)) {
+                        // get previous node with endId equals startId of pCurrentNodeId
+                        ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
+
+                        while (backwardsIterator.hasNext()) {
+                            String previousNodeId = backwardsIterator.next().getKey();
+                            String[] previousKeys = previousNodeId.split("-");
+
+                            if (previousKeys[1].equals(keys[0])) {
+                                if (!routeIterator.hasNext()) {
+                                    mRouteDirection = RouteDirection.FORWARD;
+                                }
+
+                                return previousNodeId;
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.FORWARD)) {
                 String connectionKey = routeIterator.next().getKey();
@@ -90,7 +120,11 @@ public class Agent
                 }
             }
 
-            while (routeIterator.hasPrevious() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
+            mRouteDirection = RouteDirection.BACKWARDS;
+
+            // set iterator to start of list again
+            routeIterator = mRoute.listIterator();
+            while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
                 String connectionKey = routeIterator.next().getKey();
                 String[] keys = connectionKey.split("-");
 
@@ -99,11 +133,14 @@ public class Agent
                     // -> getNode with sourceNode as target, which represents node before
                     ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
                     while (backwardsIterator.hasNext()) {
-                        String previousNodeKey = routeIterator.next().getKey();
+                        String previousNodeKey = backwardsIterator.next().getKey();
                         String[] prevKeys = previousNodeKey.split("-");
 
                         if (prevKeys[1].equals(keys[0])) {
-                            mRouteDirection = RouteDirection.BACKWARDS;
+                            if (!routeIterator.hasPrevious()) {
+                                mRouteDirection = RouteDirection.FORWARD;
+                            }
+
                             return previousNodeKey;
                         }
                     }
@@ -113,7 +150,7 @@ public class Agent
             }
         }
 
-
+        LOGGER.warning("CurrentNodeId: " + pCurrentNodeId + ", Direction: " + mRouteDirection);
 
         throw new IllegalStateException("No route found for given nodeId " + pCurrentNodeId);
     }
