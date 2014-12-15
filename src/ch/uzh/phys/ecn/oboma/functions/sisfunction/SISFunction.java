@@ -35,16 +35,15 @@ public abstract class SISFunction
 
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
-
-        if (pAgent.getState() == InfectionState.IMMUNE) {
-            return InfectionState.IMMUNE;
+        if (mDiseaseDistributionInNode[1] == 0){
+            return pAgent.getState();
         }
+
+//        if (pAgent.getState() == InfectionState.IMMUNE) {
+//            return InfectionState.IMMUNE;
+//        }
 
         InfectionState newAgentInfectionState = getNewInfectionState(pAgent);
-
-        if (newAgentInfectionState == InfectionState.RECOVERED || newAgentInfectionState == null) {
-            newAgentInfectionState = InfectionState.SUSCEPTIBLE;
-        }
 
         return newAgentInfectionState;
     }
@@ -56,20 +55,26 @@ public abstract class SISFunction
         Random r = new Random();
         double compare = r.nextDouble();
 
+        System.out.println(compare + ", " + mRecoveryPercentage);
+
         if (infectionState == InfectionState.SUSCEPTIBLE) {
-            if (compare < mInfectionPercentage) {
+            if(Double.isNaN(mInfectionPercentage) || Double.isInfinite(mInfectionPercentage)) {
+                newInfectionState = InfectionState.SUSCEPTIBLE;
+            } else if (Double.compare(compare, mInfectionPercentage) < 0) {
                 newInfectionState = InfectionState.INFECTED;
             } else {
                 newInfectionState = InfectionState.SUSCEPTIBLE;
             }
         } else if (infectionState == InfectionState.INFECTED) {
-            if (compare < mRecoveryPercentage) {
+            if(Double.isNaN(mRecoveryPercentage) || Double.isInfinite(mRecoveryPercentage)){
+                newInfectionState = InfectionState.INFECTED;
+            } else if (Double.compare(compare, mRecoveryPercentage) < 0 || Double.compare(compare, mRecoveryPercentage) == 0d) {
                 newInfectionState = InfectionState.RECOVERED;
             } else {
                 newInfectionState = InfectionState.INFECTED;
             }
         } else {
-            newInfectionState = null;
+            newInfectionState = infectionState;
         }
 
         return newInfectionState;

@@ -197,6 +197,10 @@ public class Node
                 dest = mDestinationNodes.get(nextWaypoint);
             }
 
+            if (dest == null) {
+                // check origin nodes when agent is going backwards
+                dest = mOriginNodes.get(nextWaypoint);
+            }
             checkState(dest != null);
 
             if (dest.place(a)) {

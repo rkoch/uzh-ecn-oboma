@@ -23,6 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import lombok.EqualsAndHashCode;
 
@@ -39,9 +40,12 @@ public class Agent
     private final String                      mId;
     private InfectionState                    mState;
     // The list is sorted and contains all waypoints AND preferred time of staying there
-    private final List<Pair<String, Integer>> mRoute;         // NodeId, # Timesteps on the node
+    private final List<Pair<String, Integer>> mRoute;                                                 // NodeId, # Timesteps on the node
 
     private RouteDirection                    mRouteDirection;
+
+    private static final Logger               LOGGER = Logger.getLogger(Agent.class.getName());
+
 
     public Agent(String pId, List<Pair<String, Integer>> pRoute) {
         checkArgument(pId != null);
@@ -71,37 +75,83 @@ public class Agent
     public String getNextWaypoint(String pCurrentNodeId) {
         ListIterator<Pair<String, Integer>> routeIterator = mRoute.listIterator();
 
-        boolean foundCurrentNode = false;
-        while (!foundCurrentNode) {
-            if (routeIterator.hasNext() &&
-                    routeIterator.next().getKey().equals(pCurrentNodeId)) {
-                foundCurrentNode = true;
-            }
+        if (mRoute.isEmpty()) {
+            return pCurrentNodeId;
         }
 
-        if (mRouteDirection.equals(RouteDirection.FORWARD)) {
-            if (routeIterator.hasNext()) {
-                // agent can still go forward
-                return routeIterator.next().getKey();
-            } else if (routeIterator.hasPrevious()) {
-                // we reached the end of the list
-                // -> agent must going backwards
-                mRouteDirection = RouteDirection.BACKWARDS;
-                return routeIterator.previous().getKey();
+
+        if (pCurrentNodeId.contains("-")) {
+            if (mRouteDirection.equals(RouteDirection.FORWARD)) {
+                String[] keys = pCurrentNodeId.split("-");
+                return keys[1];
+            } else {
+                // look for correct node to get previous node
+                while (routeIterator.hasNext()) {
+                    String connectionKey = routeIterator.next().getKey();
+                    String[] keys = connectionKey.split("-");
+
+                    if (connectionKey.equals(pCurrentNodeId)) {
+                        // get previous node with endId equals startId of pCurrentNodeId
+                        ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
+
+                        while (backwardsIterator.hasNext()) {
+                            String previousNodeId = backwardsIterator.next().getKey();
+                            String[] previousKeys = previousNodeId.split("-");
+
+                            if (previousKeys[1].equals(keys[0])) {
+                                if (!routeIterator.hasNext()) {
+                                    mRouteDirection = RouteDirection.FORWARD;
+                                }
+
+                                return previousKeys[0];
+                            }
+                        }
+                    }
+                }
             }
         } else {
-            if (routeIterator.hasPrevious()) {
-                // agent can still go backwards
-                return routeIterator.previous().getKey();
-            } else if (routeIterator.hasNext()) {
-                // agent reached start node
-                // -> must going forwards
-                mRouteDirection = RouteDirection.FORWARD;
-                return routeIterator.next().getKey();
+            while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.FORWARD)) {
+                String connectionKey = routeIterator.next().getKey();
+                String[] keys = connectionKey.split("-");
+
+                if (keys[0].equals(pCurrentNodeId)) {
+                    // target node id
+                    return connectionKey;
+                }
+            }
+
+            mRouteDirection = RouteDirection.BACKWARDS;
+
+            // set iterator to start of list again
+            routeIterator = mRoute.listIterator();
+            while (routeIterator.hasNext() && mRouteDirection.equals(RouteDirection.BACKWARDS)) {
+                String connectionKey = routeIterator.next().getKey();
+                String[] keys = connectionKey.split("-");
+
+                if (keys[1].equals(pCurrentNodeId)) {
+                    // source node id with currentNodeId as target
+                    // -> getNode with sourceNode as target, which represents node before
+                    ListIterator<Pair<String, Integer>> backwardsIterator = mRoute.listIterator();
+                    while (backwardsIterator.hasNext()) {
+                        String previousNodeKey = backwardsIterator.next().getKey();
+                        String[] prevKeys = previousNodeKey.split("-");
+
+                        if (prevKeys[1].equals(keys[1])) {
+                            if (!routeIterator.hasNext()) {
+                                mRouteDirection = RouteDirection.FORWARD;
+                            }
+
+                            // return route with direction changed
+                            return prevKeys[0] + "-" + prevKeys[1];
+                        }
+                    }
+                }
             }
         }
 
-        throw new IllegalStateException("Given Node does not exist");
+        LOGGER.warning("CurrentNodeId: " + pCurrentNodeId + ", Direction: " + mRouteDirection);
+
+        throw new IllegalStateException("No route found for given nodeId " + pCurrentNodeId);
     }
 
     public InfectionState getState() {
