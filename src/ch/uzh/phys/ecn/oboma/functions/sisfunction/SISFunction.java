@@ -43,7 +43,7 @@ public abstract class SISFunction
         InfectionState newAgentInfectionState = getNewInfectionState(pAgent);
 
         if (newAgentInfectionState == InfectionState.RECOVERED || newAgentInfectionState == null) {
-            newAgentInfectionState = InfectionState.SUSCEPTIBLE;
+            newAgentInfectionState = InfectionState.RECOVERED;
         }
 
         return newAgentInfectionState;
