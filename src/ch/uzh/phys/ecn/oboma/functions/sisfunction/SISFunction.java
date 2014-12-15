@@ -63,7 +63,7 @@ public abstract class SISFunction
             }
         } else if (infectionState == InfectionState.INFECTED) {
             if (Double.compare(compare, mRecoveryPercentage) < 0) {
-                newInfectionState = InfectionState.INFECTED;
+                newInfectionState = InfectionState.RECOVERED;
             } else {
                 newInfectionState = InfectionState.INFECTED;
             }
