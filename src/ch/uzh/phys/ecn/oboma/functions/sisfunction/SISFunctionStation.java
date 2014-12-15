@@ -13,8 +13,8 @@ public class SISFunctionStation
         mDiseaseDistributionInNode = AgentUtils.getDiseaseDistributionInNode(pNode);
         mNewDiseaseDistributionInNode = calculateSIR(mDiseaseDistributionInNode[0], mDiseaseDistributionInNode[1], mDiseaseDistributionInNode[2] + mDiseaseDistributionInNode[3]);
 
-        mInfectionPercentage = getPercentage(pNode.getAllAgents().size(), Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
-        mRecoveryPercentage = getPercentage(pNode.getAllAgents().size(), Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
+        mInfectionPercentage = getPercentage(mDiseaseDistributionInNode[0], Math.abs(mDiseaseDistributionInNode[0] - mNewDiseaseDistributionInNode[0]));
+        mRecoveryPercentage = getPercentage(mDiseaseDistributionInNode[2], Math.abs(mDiseaseDistributionInNode[2] - mNewDiseaseDistributionInNode[2]));
     }
 
     protected double[] calculateSIR(double pSusceptible, double pInfected, double pRecovered) {
@@ -31,8 +31,8 @@ public class SISFunctionStation
         return yn1;
     }
 
-    protected double getPercentage(double pNumberOfAgents, double pNew) {
-        return pNew / pNumberOfAgents;
+    protected double getPercentage(double pOld, double pNew) {
+        return pNew / pOld;
     }
 
 }

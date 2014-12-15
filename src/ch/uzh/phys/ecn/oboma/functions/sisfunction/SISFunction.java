@@ -35,16 +35,15 @@ public abstract class SISFunction
 
     @Override
     public InfectionState apply(Agent pAgent, INode pNode) {
+        if(mDiseaseDistributionInNode[1] == 0){
+            return pAgent.getState();
+        }
 
         if (pAgent.getState() == InfectionState.IMMUNE) {
             return InfectionState.IMMUNE;
         }
 
         InfectionState newAgentInfectionState = getNewInfectionState(pAgent);
-
-        if (newAgentInfectionState == InfectionState.RECOVERED || newAgentInfectionState == null) {
-            newAgentInfectionState = InfectionState.RECOVERED;
-        }
 
         return newAgentInfectionState;
     }
@@ -57,19 +56,19 @@ public abstract class SISFunction
         double compare = r.nextDouble();
 
         if (infectionState == InfectionState.SUSCEPTIBLE) {
-            if (compare < mInfectionPercentage) {
+            if (Double.compare(compare, mInfectionPercentage) < 0) {
                 newInfectionState = InfectionState.INFECTED;
             } else {
                 newInfectionState = InfectionState.SUSCEPTIBLE;
             }
         } else if (infectionState == InfectionState.INFECTED) {
-            if (compare < mRecoveryPercentage) {
-                newInfectionState = InfectionState.RECOVERED;
+            if (Double.compare(compare, mRecoveryPercentage) < 0) {
+                newInfectionState = InfectionState.INFECTED;
             } else {
                 newInfectionState = InfectionState.INFECTED;
             }
         } else {
-            newInfectionState = null;
+            newInfectionState = infectionState;
         }
 
         return newInfectionState;
