@@ -12,16 +12,13 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import ch.uzh.phys.ecn.oboma.agents.model.Agent;
+import ch.uzh.phys.ecn.oboma.common.DiseaseConstants;
 import ch.uzh.phys.ecn.oboma.common.InfectionState;
 import ch.uzh.phys.ecn.oboma.map.api.INode;
 import ch.uzh.phys.ecn.oboma.map.api.INodeMap;
 
 
 public class AgentBuilder {
-
-    private final static int    DEFAULT_AMOUNT_OF_TIME_TO_STAY    = 3;
-    private final static int    DEFAULT_AMOUNT_OF_TRAVELNODES     = 5;
-    private final static double TRAVELNODES_DEVIATION_PROBABILITY = 0.25;
 
     public static List<Agent> generateAgents(int pNumberOfAgents, double pInfectionProbability, double pImuneProbability, INodeMap pNodeMap, INode pSourceNode) {
         List<Agent> generatedAgents = new ArrayList<>();
@@ -39,13 +36,13 @@ public class AgentBuilder {
         // amount of nodes on route is reverse-proportional to the size of the city
         // size of the city is amount of outgoing connections.
         Random rand = new Random();
-        int nrOfTravellingNodes = DEFAULT_AMOUNT_OF_TRAVELNODES;
-        if (rand.nextGaussian() < TRAVELNODES_DEVIATION_PROBABILITY) {
+        int nrOfTravellingNodes = DiseaseConstants.DEFAULT_AMOUNT_OF_TRAVELNODES;
+        if (rand.nextGaussian() < DiseaseConstants.TRAVELNODES_DEVIATION_PROBABILITY) {
             int minNodesToTravel = 1;
             int maxNodesToTravel = 100;
             nrOfTravellingNodes = (rand.nextInt((maxNodesToTravel - minNodesToTravel) + 1) + minNodesToTravel) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1);
         } else {
-            nrOfTravellingNodes = (int) Math.round(((DEFAULT_AMOUNT_OF_TRAVELNODES * 1d) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1)));
+            nrOfTravellingNodes = (int) Math.round(((DiseaseConstants.DEFAULT_AMOUNT_OF_TRAVELNODES * 1d) / ((sourceNode.getDestinations().size() > 0) ? sourceNode.getDestinations().size() : 1)));
         }
 
         return getRoute(pNodeMap, sourceNode, new ArrayList<Pair<String, Integer>>(), nrOfTravellingNodes);
@@ -66,7 +63,7 @@ public class AgentBuilder {
         String randomKey = nodeIdentifiers.get(new Random().nextInt(nodeIdentifiers.size()));
         int timeToStay = 1;
         if (nrOfTravellingNodes > 1) {
-            double preferredTimeToStay = (DEFAULT_AMOUNT_OF_TIME_TO_STAY * 1d) / (nodeIdentifiers.size() * 1d);
+            double preferredTimeToStay = (DiseaseConstants.DEFAULT_AMOUNT_OF_TIME_TO_STAY * 1d) / (nodeIdentifiers.size() * 1d);
             // avoid 0-values on casting
             while (preferredTimeToStay < 1d) {
                 preferredTimeToStay *= 10;
